@@ -51,5 +51,4 @@ class ComicService(
             Resource.Fail(ProcessStatus.Fail, e.message ?: e.toString())
         }
     }
-
 }

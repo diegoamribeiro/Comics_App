@@ -9,13 +9,13 @@ import com.example.comics.entity.ItemVO
 
 class Adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var itens = emptyList<ItemVO>()
+    private var items = emptyList<ItemVO>()
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ItemViewHolder).bind(item = itens[position])
+        (holder as ItemViewHolder).bind(item = items[position])
     }
 
-    override fun getItemCount(): Int = itens.size
+    override fun getItemCount(): Int = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         getItemHolder(parent = parent)
@@ -29,7 +29,7 @@ class Adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     )
 
     fun setData(list: List<ItemVO>) {
-        this.itens = list
+        this.items = list
         notifyDataSetChanged()
     }
 

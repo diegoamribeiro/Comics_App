@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.comics.MyApplication
 import com.example.comics.entity.ItemVO
 import com.example.comics.entity.Resource
 import com.example.comics.repository.ComicRepository
@@ -17,16 +18,36 @@ class MainViewModel(
     private val _comics = MutableLiveData<Resource<List<ItemVO>>>()
     val comics: LiveData<Resource<List<ItemVO>>> = _comics
 
+    private var _alert = MutableLiveData<String?>()
+    var alert: LiveData<String?> = _alert
+
     fun getComics() {
-        viewModelScope.launch {
-            _comics.value = Resource.Loading
-            val resource = repository.getComics()
-            if (resource is Resource.Success){
+        if (MyApplication.hasNetwork()){
+            viewModelScope.launch {
+                _comics.value = Resource.Loading
+                val resource = repository.getComics()
                 _comics.value = resource
-            }else{
-                Resource.Fail(ProcessStatus.Fail, resource.toString())
+                if (resource is Resource.Fail){
+                    when(resource.status){
+                        ProcessStatus.NoInternet -> {
+                            _alert.value = "No Internet Connection"
+                        }
+                        ProcessStatus.TimeOut ->
+                            _alert.value = "Timeout"
+
+                        ProcessStatus.WrongParameter -> _alert.value =
+                            "Unknown Fail"
+                        else -> {
+                            _alert.value = "Unknown Fail"
+                        }
+                    }
+                    Resource.Fail(ProcessStatus.Fail, resource.toString())
+                }
             }
+        }else{
+            _alert.value = "No Internet Connection"
         }
+
     }
 
 }

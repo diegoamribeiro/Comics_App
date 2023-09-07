@@ -1,6 +1,7 @@
 package com.example.comics.view
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,33 +15,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: Adapter
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModel.getComics()
-        setupAdapter()
-        setListeners()
-        addObserver()
-    }
 
-    private fun addObserver(){
-        viewModel.comics.observe(this@MainActivity){ resource ->
-            when(resource){
-                is Resource.Loading -> {
-                    binding.swipeRefresh.isRefreshing = true
-                }
-                is Resource.Success -> {
-                    binding.swipeRefresh.isRefreshing = false
-                    adapter.setData(resource.data)
-                }
-                is Resource.Fail -> {
-                    binding.swipeRefresh.isRefreshing = false
-                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
+        setupAdapter()
+
+        addObserver()
+
+        setListeners()
+
+        viewModel.getComics()
     }
 
     private fun setupAdapter() {
@@ -49,10 +36,35 @@ class MainActivity : AppCompatActivity() {
         binding.listItem.adapter = adapter
     }
 
+    private fun addObserver() {
+        viewModel.comics.observe(this@MainActivity) { resource ->
+            when(resource) {
+                is Resource.Loading -> {
+                    binding.swipeRefresh.isRefreshing = true
+                    binding.listItem.visibility = View.GONE
+                }
+                is Resource.Success -> {
+                    binding.listItem.visibility = View.VISIBLE
+                    binding.swipeRefresh.isRefreshing = false
+                    adapter.setData(resource.data)
+                }
+                is Resource.Fail -> {
+                    binding.listItem.visibility = View.GONE
+                    binding.swipeRefresh.isRefreshing = false
+                }
+            }
+        }
+
+        viewModel.alert.observe(this){ alertInfo ->
+            alertInfo.let {
+                Toast.makeText(this, it!!, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun setListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.getComics()
-            binding.swipeRefresh.isRefreshing = false
         }
     }
 }
