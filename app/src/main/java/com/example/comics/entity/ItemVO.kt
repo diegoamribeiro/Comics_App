@@ -1,4 +1,4 @@
-package com.example.comics.view
+package com.example.comics.entity
 
 data class ItemVO(
     var image: String,

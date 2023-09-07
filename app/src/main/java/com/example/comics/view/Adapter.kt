@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.comics.databinding.ItemListBinding
+import com.example.comics.entity.ItemVO
 
 class Adapter(
     private val itens: List<ItemVO>,

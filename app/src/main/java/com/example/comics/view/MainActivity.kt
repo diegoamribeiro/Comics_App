@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.comics.databinding.ActivityMainBinding
+import com.example.comics.entity.ItemVO
 import com.example.comics.interactor.Interactor
 import com.example.comics.presenter.Presenter
 import kotlinx.coroutines.launch
@@ -21,18 +22,18 @@ class MainActivity : AppCompatActivity(), IView {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        refrash()
+        refresh()
 
         swipeList()
     }
 
     private fun swipeList() = with(binding?.swipeRefresh) {
         this?.setOnRefreshListener {
-            refrash()
+            refresh()
         }
     }
 
-    override fun refrash() {
+    override fun refresh() {
         with(binding) {
             this?.swipeRefresh?.isRefreshing = true
             lifecycle.coroutineScope.launch {
