@@ -7,9 +7,9 @@ import com.bumptech.glide.Glide
 import com.example.comics.databinding.ItemListBinding
 import com.example.comics.entity.ItemVO
 
-class Adapter(
-    private val itens: List<ItemVO>,
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class Adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var itens = emptyList<ItemVO>()
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as ItemViewHolder).bind(item = itens[position])
@@ -27,6 +27,11 @@ class Adapter(
             false
         )
     )
+
+    fun setData(list: List<ItemVO>) {
+        this.itens = list
+        notifyDataSetChanged()
+    }
 
     private class ItemViewHolder(val itemBinding: ItemListBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
